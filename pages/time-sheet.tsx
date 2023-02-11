@@ -53,36 +53,48 @@ export default function TimeSheet() {
     else return false
   }
 
+  const handleKeydown = (
+    key: string,
+    rowIndex: number,
+    inputType: InputType
+  ) => {
+    if (key === "Escape") {
+      setInputIndexes([{ rowIndex, inputType }])
+    }
+
+    if (key === "Tab") {
+      if (inputType === "end") {
+        setInputIndexes([{ rowIndex: rowIndex + 1, inputType: "start" }])
+      } else setInputIndexes([{ rowIndex: rowIndex, inputType: "end" }])
+    }
+  }
+
   return (
     <div>
       {inputValues.map(({ day, start, end }, rowIndex) => (
         <div key={rowIndex}>
           <label>{day}</label>
-          <div>
-            <label>Start</label>
-            <Input
-              selected={isSelected(rowIndex, "start")}
-              data-input="time"
-              onChange={e => editSelectedInputs(e.target.value)}
-              value={start}
-              onClick={() => clickHandler(rowIndex, "start")}
-              onBlur={blurHandler}
-            />
-          </div>
-          <div>
-            <label>End</label>
-            <Input
-              selected={isSelected(rowIndex, "end")}
-              data-input="time"
-              onChange={e => editSelectedInputs(e.target.value)}
-              value={end}
-              onClick={() => clickHandler(rowIndex, "end")}
-              onBlur={blurHandler}
-            />
-          </div>
+          <Input
+            selected={isSelected(rowIndex, "start")}
+            data-input="time"
+            onChange={e => editSelectedInputs(e.target.value)}
+            value={start}
+            onClick={() => clickHandler(rowIndex, "start")}
+            onBlur={blurHandler}
+            onKeyDown={e => handleKeydown(e.key, rowIndex, "start")}
+          />
+          <Input
+            selected={isSelected(rowIndex, "end")}
+            data-input="time"
+            onChange={e => editSelectedInputs(e.target.value)}
+            value={end}
+            onClick={() => clickHandler(rowIndex, "end")}
+            onBlur={blurHandler}
+            onKeyDown={e => handleKeydown(e.key, rowIndex, "end")}
+          />
         </div>
       ))}
-      <pre>{JSON.stringify(inputIndexes, null, 2)}</pre>
+      <pre>{JSON.stringify(inputIndexes)}</pre>
     </div>
   )
 }
