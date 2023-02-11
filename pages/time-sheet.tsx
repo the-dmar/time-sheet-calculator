@@ -1,7 +1,7 @@
 import { Input } from "@/styles/General.styled"
 import { useState } from "react"
 
-type InputType = "start" | "end"
+type InputType = "startTime" | "endTime" | "breakTime"
 
 interface InputLocation {
   rowIndex: number
@@ -9,13 +9,13 @@ interface InputLocation {
 }
 
 const startingInputValues = [
-  { day: "Sunday", start: "", end: "" },
-  { day: "Monday", start: "", end: "" },
-  { day: "Tuesday", start: "", end: "" },
-  { day: "Wednesday", start: "", end: "" },
-  { day: "Thursday", start: "", end: "" },
-  { day: "Friday", start: "", end: "" },
-  { day: "Saturday", start: "", end: "" },
+  { day: "Sunday", startTime: "", endTime: "", breakTime: "" },
+  { day: "Monday", startTime: "", endTime: "", breakTime: "" },
+  { day: "Tuesday", startTime: "", endTime: "", breakTime: "" },
+  { day: "Wednesday", startTime: "", endTime: "", breakTime: "" },
+  { day: "Thursday", startTime: "", endTime: "", breakTime: "" },
+  { day: "Friday", startTime: "", endTime: "", breakTime: "" },
+  { day: "Saturday", startTime: "", endTime: "", breakTime: "" },
 ]
 
 export default function TimeSheet() {
@@ -63,35 +63,47 @@ export default function TimeSheet() {
     }
 
     if (key === "Tab") {
-      if (inputType === "end") {
-        setInputIndexes([{ rowIndex: rowIndex + 1, inputType: "start" }])
-      } else setInputIndexes([{ rowIndex: rowIndex, inputType: "end" }])
+      if (inputType === "endTime") {
+        setInputIndexes([{ rowIndex: rowIndex + 1, inputType: "startTime" }])
+      } else setInputIndexes([{ rowIndex: rowIndex, inputType: "endTime" }])
     }
   }
 
+  const headers = ["Day", "Start Time", "End Time", "Break Time", "Total"]
+
   return (
     <div>
-      {inputValues.map(({ day, start, end }, rowIndex) => (
+      {inputValues.map(({ day, startTime, endTime, breakTime }, rowIndex) => (
         <div key={rowIndex}>
           <label>{day}</label>
           <Input
-            selected={isSelected(rowIndex, "start")}
+            selected={isSelected(rowIndex, "startTime")}
             data-input="time"
             onChange={e => editSelectedInputs(e.target.value)}
-            value={start}
-            onClick={() => clickHandler(rowIndex, "start")}
+            value={startTime}
+            onClick={() => clickHandler(rowIndex, "startTime")}
             onBlur={blurHandler}
-            onKeyDown={e => handleKeydown(e.key, rowIndex, "start")}
+            onKeyDown={e => handleKeydown(e.key, rowIndex, "startTime")}
           />
           <Input
-            selected={isSelected(rowIndex, "end")}
+            selected={isSelected(rowIndex, "endTime")}
             data-input="time"
             onChange={e => editSelectedInputs(e.target.value)}
-            value={end}
-            onClick={() => clickHandler(rowIndex, "end")}
+            value={endTime}
+            onClick={() => clickHandler(rowIndex, "endTime")}
             onBlur={blurHandler}
-            onKeyDown={e => handleKeydown(e.key, rowIndex, "end")}
+            onKeyDown={e => handleKeydown(e.key, rowIndex, "endTime")}
           />
+          <Input
+            selected={isSelected(rowIndex, "breakTime")}
+            data-input="time"
+            onChange={e => editSelectedInputs(e.target.value)}
+            value={breakTime}
+            onClick={() => clickHandler(rowIndex, "breakTime")}
+            onBlur={blurHandler}
+            onKeyDown={e => handleKeydown(e.key, rowIndex, "breakTime")}
+          />
+          <div>2.25</div>
         </div>
       ))}
       <pre>{JSON.stringify(inputIndexes)}</pre>
