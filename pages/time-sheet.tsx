@@ -1,4 +1,9 @@
 import { Input } from "@/styles/General.styled"
+import {
+  ColumnHeader,
+  HorizontalHeaderLine,
+  TimeSheetGrid,
+} from "@/styles/TimeSheet.styled"
 import { useState } from "react"
 
 type InputType = "startTime" | "endTime" | "breakTime"
@@ -69,13 +74,24 @@ export default function TimeSheet() {
     }
   }
 
-  const headers = ["Day", "Start Time", "End Time", "Break Time", "Total"]
+  const headers = [
+    "Day",
+    "Start Time",
+    "End Time",
+    "Break Time",
+    "Duration",
+    "Earnings",
+  ]
 
   return (
-    <div>
+    <TimeSheetGrid>
+      {headers.map(header => (
+        <ColumnHeader>{header}</ColumnHeader>
+      ))}
+      <HorizontalHeaderLine></HorizontalHeaderLine>
       {inputValues.map(({ day, startTime, endTime, breakTime }, rowIndex) => (
-        <div key={rowIndex}>
-          <label>{day}</label>
+        <>
+          <div>{day}</div>
           <Input
             selected={isSelected(rowIndex, "startTime")}
             data-input="time"
@@ -104,9 +120,9 @@ export default function TimeSheet() {
             onKeyDown={e => handleKeydown(e.key, rowIndex, "breakTime")}
           />
           <div>2.25</div>
-        </div>
+          <div>$32.00</div>
+        </>
       ))}
-      <pre>{JSON.stringify(inputIndexes)}</pre>
-    </div>
+    </TimeSheetGrid>
   )
 }
