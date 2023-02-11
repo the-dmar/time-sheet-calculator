@@ -2,6 +2,7 @@ import styled from "styled-components"
 
 interface InputProps {
   selected: boolean
+  removeCursor?: boolean
 }
 
 interface FlexProps {
@@ -16,6 +17,8 @@ export const Input = styled.input<InputProps>`
   font-size: 1rem;
   outline: transparent;
   transition: border 0.25s ease;
+  cursor: ${({ removeCursor }) => (removeCursor ? "cell" : "")};
+  caret-color: ${({ removeCursor }) => (removeCursor ? "transparent" : "")};
 `
 
 export const FlexContainer = styled.div<FlexProps>`

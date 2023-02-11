@@ -98,6 +98,7 @@ export default function TimeSheet() {
         <>
           <div>{day}</div>
           <Input
+            removeCursor={true}
             selected={isSelected(rowIndex, "startTime")}
             data-input="time"
             onChange={e => editSelectedInputs(e.target.value)}
@@ -107,6 +108,7 @@ export default function TimeSheet() {
             onKeyDown={e => handleKeydown(e.key, rowIndex, "startTime")}
           />
           <Input
+            removeCursor={true}
             selected={isSelected(rowIndex, "endTime")}
             data-input="time"
             onChange={e => editSelectedInputs(e.target.value)}
@@ -116,6 +118,7 @@ export default function TimeSheet() {
             onKeyDown={e => handleKeydown(e.key, rowIndex, "endTime")}
           />
           <Input
+            removeCursor={true}
             selected={isSelected(rowIndex, "breakTime")}
             data-input="time"
             onChange={e => editSelectedInputs(e.target.value)}
