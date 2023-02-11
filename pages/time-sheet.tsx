@@ -1,3 +1,4 @@
+import useTimeValue from "@/hooks/useTimeValue"
 import { Input } from "@/styles/General.styled"
 import {
   ColumnHeader,
@@ -26,6 +27,7 @@ const startingInputValues = [
 export default function TimeSheet() {
   const [inputValues, setInputValues] = useState(startingInputValues)
   const [inputIndexes, setInputIndexes] = useState<InputLocation[]>([])
+  const [timeValueHandler, clear] = useTimeValue()
 
   const clickHandler = (rowIndex: number, inputType: InputType) => {
     setInputIndexes(inputIndexes => [...inputIndexes, { rowIndex, inputType }])
@@ -40,12 +42,15 @@ export default function TimeSheet() {
   }
 
   const editSelectedInputs = (value: string) => {
-    let newInputValues = [...inputValues]
-    inputIndexes.forEach(({ rowIndex, inputType }) => {
-      newInputValues[rowIndex][inputType] = value
-    })
+    const newValue = timeValueHandler(value)
+    if (typeof newValue === "string") {
+      let newInputValues = [...inputValues]
+      inputIndexes.forEach(({ rowIndex, inputType }) => {
+        newInputValues[rowIndex][inputType] = newValue
+      })
 
-    setInputValues(newInputValues)
+      setInputValues(newInputValues)
+    }
   }
 
   const isSelected = (currentRowIndex: number, currentType: InputType) => {
