@@ -1,3 +1,4 @@
+import { Input } from "@/styles/General.styled"
 import { useState } from "react"
 
 type InputType = "start" | "end"
@@ -42,6 +43,16 @@ export default function TimeSheet() {
     setInputValues(newInputValues)
   }
 
+  const isSelected = (currentRowIndex: number, currentType: InputType) => {
+    let isInSelectedArray = inputIndexes.find(
+      ({ rowIndex, inputType }) =>
+        rowIndex === currentRowIndex && currentType === inputType
+    )
+
+    if (typeof isInSelectedArray === "object") return true
+    else return false
+  }
+
   return (
     <div>
       {inputValues.map(({ day, start, end }, rowIndex) => (
@@ -49,7 +60,8 @@ export default function TimeSheet() {
           <label>{day}</label>
           <div>
             <label>Start</label>
-            <input
+            <Input
+              selected={isSelected(rowIndex, "start")}
               data-input="time"
               onChange={e => editSelectedInputs(e.target.value)}
               value={start}
@@ -59,7 +71,8 @@ export default function TimeSheet() {
           </div>
           <div>
             <label>End</label>
-            <input
+            <Input
+              selected={isSelected(rowIndex, "end")}
               data-input="time"
               onChange={e => editSelectedInputs(e.target.value)}
               value={end}
