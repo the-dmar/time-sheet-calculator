@@ -28,10 +28,7 @@ export default function TimeSheet() {
   const [inputValues, setInputValues] = useState(startingInputValues)
   const [inputIndexes, setInputIndexes] = useState<InputLocation[]>([])
   const [timeValueHandler, clear] = useTimeValue()
-
-  const clickHandler = (rowIndex: number, inputType: InputType) => {
-    setInputIndexes(inputIndexes => [...inputIndexes, { rowIndex, inputType }])
-  }
+  const [dragging, setDragging] = useState(false)
 
   const blurHandler = () => {
     setTimeout(() => {
@@ -79,6 +76,22 @@ export default function TimeSheet() {
     }
   }
 
+  const handleMouseDown = (rowIndex: number, inputType: InputType) => {
+    setInputIndexes(inputIndexes => [...inputIndexes, { rowIndex, inputType }])
+    setDragging(true)
+  }
+
+  const handleMouseUp = () => setDragging(false)
+
+  const handleMouseOver = (rowIndex: number, inputType: InputType) => {
+    if (dragging) {
+      setInputIndexes(inputIndexes => [
+        ...inputIndexes,
+        { rowIndex, inputType },
+      ])
+    }
+  }
+
   const headers = [
     "Day",
     "Start Time",
@@ -103,7 +116,9 @@ export default function TimeSheet() {
             data-input="time"
             onChange={e => editSelectedInputs(e.target.value)}
             value={startTime}
-            onClick={() => clickHandler(rowIndex, "startTime")}
+            onMouseDown={() => handleMouseDown(rowIndex, "startTime")}
+            onMouseUp={handleMouseUp}
+            onMouseOver={() => handleMouseOver(rowIndex, "startTime")}
             onBlur={blurHandler}
             onKeyDown={e => handleKeydown(e.key, rowIndex, "startTime")}
           />
@@ -113,7 +128,9 @@ export default function TimeSheet() {
             data-input="time"
             onChange={e => editSelectedInputs(e.target.value)}
             value={endTime}
-            onClick={() => clickHandler(rowIndex, "endTime")}
+            onMouseDown={() => handleMouseDown(rowIndex, "endTime")}
+            onMouseUp={handleMouseUp}
+            onMouseOver={() => handleMouseOver(rowIndex, "endTime")}
             onBlur={blurHandler}
             onKeyDown={e => handleKeydown(e.key, rowIndex, "endTime")}
           />
@@ -123,7 +140,9 @@ export default function TimeSheet() {
             data-input="time"
             onChange={e => editSelectedInputs(e.target.value)}
             value={breakTime}
-            onClick={() => clickHandler(rowIndex, "breakTime")}
+            onMouseDown={() => handleMouseDown(rowIndex, "breakTime")}
+            onMouseUp={handleMouseUp}
+            onMouseOver={() => handleMouseOver(rowIndex, "breakTime")}
             onBlur={blurHandler}
             onKeyDown={e => handleKeydown(e.key, rowIndex, "breakTime")}
           />
