@@ -4,8 +4,10 @@ export default function useTimeValue() {
   const [lastCharacter, setLastCharacter] = useState("")
 
   const handleNewValue = (newValue: string) => {
-    setLastCharacter(newValue[newValue.length - 1])
-    return newValue.toUpperCase()
+    if (!/:{2,}/g.test(newValue)) {
+      setLastCharacter(newValue[newValue.length - 1])
+      return newValue.toUpperCase()
+    }
   }
 
   const timeValueHandler = (value: string) => {
