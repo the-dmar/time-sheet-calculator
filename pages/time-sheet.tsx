@@ -5,7 +5,9 @@ import {
   HorizontalHeaderLine,
   TimeSheetGrid,
 } from "@/styles/TimeSheet.styled"
-import { useState } from "react"
+import calculateTimeDifference from "@/utils/calculateTimeDifference"
+import validateTime from "@/utils/validateTime"
+import { useState, useEffect, useCallback } from "react"
 
 type InputType = "startTime" | "endTime" | "breakTime"
 
@@ -14,15 +16,24 @@ interface InputLocation {
   inputType: InputType
 }
 
-const startingInputValues = [
-  { day: "Sunday", startTime: "", endTime: "", breakTime: "" },
-  { day: "Monday", startTime: "", endTime: "", breakTime: "" },
-  { day: "Tuesday", startTime: "", endTime: "", breakTime: "" },
-  { day: "Wednesday", startTime: "", endTime: "", breakTime: "" },
-  { day: "Thursday", startTime: "", endTime: "", breakTime: "" },
-  { day: "Friday", startTime: "", endTime: "", breakTime: "" },
-  { day: "Saturday", startTime: "", endTime: "", breakTime: "" },
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ]
+
+const startingInputValues = days.map(day => ({
+  day,
+  startTime: "",
+  endTime: "",
+  breakTime: "",
+  duration: "N/A",
+  earnings: "",
+}))
 
 export default function TimeSheet() {
   const [inputValues, setInputValues] = useState(startingInputValues)
@@ -30,11 +41,29 @@ export default function TimeSheet() {
   const [timeValueHandler, clear] = useTimeValue()
   const [dragging, setDragging] = useState(false)
 
+  const addDurationAndEarnings = useCallback(() => {
+    const newInputValues = inputValues.map(day => {
+      console.log({ day })
+      if (day.startTime.length === 8 && day.endTime.length === 8) {
+        let newDay = {
+          ...day,
+          duration: calculateTimeDifference(day.startTime, day.endTime),
+        }
+        return newDay
+      } else return day
+    })
+
+    setInputValues(newInputValues)
+  }, [])
+
   const blurHandler = () => {
     setTimeout(() => {
       const { attributes } = document.activeElement as HTMLElement
-      const isInput = attributes?.["data-input"]?.value
-      if (isInput !== "time") setInputIndexes([])
+      const isInput = attributes.getNamedItem("data-input")?.nodeValue
+      if (isInput !== "time") {
+        setDragging(false)
+        setInputIndexes([])
+      }
     }, 10)
   }
 
@@ -107,49 +136,51 @@ export default function TimeSheet() {
         <ColumnHeader>{header}</ColumnHeader>
       ))}
       <HorizontalHeaderLine></HorizontalHeaderLine>
-      {inputValues.map(({ day, startTime, endTime, breakTime }, rowIndex) => (
-        <>
-          <div>{day}</div>
-          <Input
-            removeCursor={true}
-            selected={isSelected(rowIndex, "startTime")}
-            data-input="time"
-            onChange={e => editSelectedInputs(e.target.value)}
-            value={startTime}
-            onMouseDown={() => handleMouseDown(rowIndex, "startTime")}
-            onMouseUp={handleMouseUp}
-            onMouseOver={() => handleMouseOver(rowIndex, "startTime")}
-            onBlur={blurHandler}
-            onKeyDown={e => handleKeydown(e.key, rowIndex, "startTime")}
-          />
-          <Input
-            removeCursor={true}
-            selected={isSelected(rowIndex, "endTime")}
-            data-input="time"
-            onChange={e => editSelectedInputs(e.target.value)}
-            value={endTime}
-            onMouseDown={() => handleMouseDown(rowIndex, "endTime")}
-            onMouseUp={handleMouseUp}
-            onMouseOver={() => handleMouseOver(rowIndex, "endTime")}
-            onBlur={blurHandler}
-            onKeyDown={e => handleKeydown(e.key, rowIndex, "endTime")}
-          />
-          <Input
-            removeCursor={true}
-            selected={isSelected(rowIndex, "breakTime")}
-            data-input="time"
-            onChange={e => editSelectedInputs(e.target.value)}
-            value={breakTime}
-            onMouseDown={() => handleMouseDown(rowIndex, "breakTime")}
-            onMouseUp={handleMouseUp}
-            onMouseOver={() => handleMouseOver(rowIndex, "breakTime")}
-            onBlur={blurHandler}
-            onKeyDown={e => handleKeydown(e.key, rowIndex, "breakTime")}
-          />
-          <div>2.25</div>
-          <div>$32.00</div>
-        </>
-      ))}
+      {inputValues.map(
+        ({ day, startTime, endTime, breakTime, duration }, rowIndex) => (
+          <>
+            <div>{day}</div>
+            <Input
+              removeCursor={true}
+              selected={isSelected(rowIndex, "startTime")}
+              data-input="time"
+              onChange={e => editSelectedInputs(e.target.value)}
+              value={startTime}
+              onMouseDown={() => handleMouseDown(rowIndex, "startTime")}
+              onMouseUp={handleMouseUp}
+              onMouseOver={() => handleMouseOver(rowIndex, "startTime")}
+              onBlur={blurHandler}
+              onKeyDown={e => handleKeydown(e.key, rowIndex, "startTime")}
+            />
+            <Input
+              removeCursor={true}
+              selected={isSelected(rowIndex, "endTime")}
+              data-input="time"
+              onChange={e => editSelectedInputs(e.target.value)}
+              value={endTime}
+              onMouseDown={() => handleMouseDown(rowIndex, "endTime")}
+              onMouseUp={handleMouseUp}
+              onMouseOver={() => handleMouseOver(rowIndex, "endTime")}
+              onBlur={blurHandler}
+              onKeyDown={e => handleKeydown(e.key, rowIndex, "endTime")}
+            />
+            <Input
+              removeCursor={true}
+              selected={isSelected(rowIndex, "breakTime")}
+              data-input="time"
+              onChange={e => editSelectedInputs(e.target.value)}
+              value={breakTime}
+              onMouseDown={() => handleMouseDown(rowIndex, "breakTime")}
+              onMouseUp={handleMouseUp}
+              onMouseOver={() => handleMouseOver(rowIndex, "breakTime")}
+              onBlur={blurHandler}
+              onKeyDown={e => handleKeydown(e.key, rowIndex, "breakTime")}
+            />
+            <div>{duration}</div>
+            <div>$32.00</div>
+          </>
+        )
+      )}
     </TimeSheetGrid>
   )
 }
