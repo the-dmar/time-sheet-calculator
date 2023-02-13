@@ -6,8 +6,7 @@ import {
   TimeSheetGrid,
 } from "@/styles/TimeSheet.styled"
 import calculateTimeDifference from "@/utils/calculateTimeDifference"
-import validateTime from "@/utils/validateTime"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback } from "react"
 
 type InputType = "startTime" | "endTime" | "breakTime"
 
@@ -31,8 +30,6 @@ const startingInputValues = days.map(day => ({
   startTime: "",
   endTime: "",
   breakTime: "",
-  duration: "N/A",
-  earnings: "",
 }))
 
 export default function TimeSheet() {
@@ -40,6 +37,7 @@ export default function TimeSheet() {
   const [inputIndexes, setInputIndexes] = useState<InputLocation[]>([])
   const [timeValueHandler, clear] = useTimeValue()
   const [dragging, setDragging] = useState(false)
+  const [rate, setRate] = useState(35)
 
   const addDurationAndEarnings = useCallback(() => {
     const newInputValues = inputValues.map(day => {
@@ -106,7 +104,7 @@ export default function TimeSheet() {
   }
 
   const handleMouseDown = (rowIndex: number, inputType: InputType) => {
-    setInputIndexes(inputIndexes => [...inputIndexes, { rowIndex, inputType }])
+    setInputIndexes([{ rowIndex, inputType }])
     setDragging(true)
   }
 
@@ -136,8 +134,10 @@ export default function TimeSheet() {
         <ColumnHeader>{header}</ColumnHeader>
       ))}
       <HorizontalHeaderLine></HorizontalHeaderLine>
-      {inputValues.map(
-        ({ day, startTime, endTime, breakTime, duration }, rowIndex) => (
+      {inputValues.map(({ day, startTime, endTime, breakTime }, rowIndex) => {
+        const duration = calculateTimeDifference(startTime, endTime)
+
+        return (
           <>
             <div>{day}</div>
             <Input
@@ -177,10 +177,14 @@ export default function TimeSheet() {
               onKeyDown={e => handleKeydown(e.key, rowIndex, "breakTime")}
             />
             <div>{duration}</div>
-            <div>$32.00</div>
+            <div>
+              {!isNaN(parseFloat(duration))
+                ? `$${parseFloat(duration) * rate}`
+                : "N/A"}
+            </div>
           </>
         )
-      )}
+      })}
     </TimeSheetGrid>
   )
 }
