@@ -1,38 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+    <h1>Time Sheet</h1>
+    <p>A less tedious method of inputting hours for freelancers</p>
+    <img src="./assets/time-sheet.gif"/>
+    <br>
+</div>
 
-## Getting Started
+## Summary
 
-First, run the development server:
+Time Card Calculator, Time Calculator, and a bunch of other time related keywords have 100K-1M searches per month. When I was freelancing, I found the options out there to be quite inconvenient. My theory is that most people start or end at similiar times each week. The idea with this application is to speed up the process, allow users to save each week to a database, and have a clock that creates the entries for them automatically via a stopwatch.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Notes
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+As I understand it, ad revenue is usually based on how long the user spends on the website, in addition to the number of visits. A time sheet application is something that would result in daily visits, while a stopwatch would result in users having the application open for many hours each day. If I make the application more convenient than the competition, then advertise it to specific audiences (freelancing subreddits, facebook groups, youtube videos related to freelancing) I would give people a tool that makes things easier for them, while also generating traffic for my website.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Road Map & Ideas
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Save user inputs for each day of the week, then make suggestions when they're typing based on their previous inputs. For example, if they've typed these inputs into the sunday start time field:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+["02:45 PM", "02:45 PM", "02:45 PM" "01:00 PM", "01:00 PM", "04:40 PM", "02:45 PM"]
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+They would be given this list of suggestions when they focus that input (sorted from most frequent to least frequent)
 
-## Learn More
+"02:45 PM",
+"01:00 PM",
+"04:40 PM"
 
-To learn more about Next.js, take a look at the following resources:
+I'd also like to have a "Start Work" button they can press to automatically populate the start field for that day, then populate the end field for that day once they press the button again. This would result in them spending lots of time on the website.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Eventually I'd like to save all entries in a database, then give them the ability to purchase more storage space, sorting features, etc.

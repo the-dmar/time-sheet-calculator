@@ -33,5 +33,5 @@ export default function useTimeValue() {
 
   const clear = () => setLastCharacter("")
 
-  return [timeValueHandler, clear]
+  return [timeValueHandler, clear] as const
 }
